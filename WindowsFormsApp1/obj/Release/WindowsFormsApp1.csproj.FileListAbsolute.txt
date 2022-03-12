@@ -8,3 +8,8 @@ C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\obj\Release\WindowsFormsApp1
 C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\obj\Release\WindowsFormsApp1.pdb
 C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\obj\Release\WindowsFormsApp1.csproj.AssemblyReference.cache
 C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\obj\Release\WindowsFormsApp.Window.resources
+C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\bin\Release\AutomaticGraphLayout.dll
+C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\bin\Release\AutomaticGraphLayout.Drawing.dll
+C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\bin\Release\Microsoft.Msagl.GraphViewerGdi.dll
+C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\bin\Release\Microsoft.Msagl.WpfGraphControl.dll
+C:\Users\Erik\Github\Tubes-2-Stima\WindowsFormsApp1\obj\Release\WindowsFormsApp1.csproj.CopyComplete

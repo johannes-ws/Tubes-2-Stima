@@ -95,7 +95,7 @@ namespace WindowsFormsApp
             // 
             this.labelFolder.AutoSize = true;
             this.labelFolder.Location = new System.Drawing.Point(175, 134);
-            this.labelFolder.MaximumSize = new System.Drawing.Size(250, 100);
+            this.labelFolder.MaximumSize = new System.Drawing.Size(200, 100);
             this.labelFolder.Name = "labelFolder";
             this.labelFolder.Size = new System.Drawing.Size(111, 17);
             this.labelFolder.TabIndex = 7;
@@ -128,6 +128,7 @@ namespace WindowsFormsApp
             // 
             // comboBox1
             // 
+            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Items.AddRange(new object[] {
             "DFS",
