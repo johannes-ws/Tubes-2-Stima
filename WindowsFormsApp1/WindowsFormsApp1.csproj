@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DepthFirstSearch.cs" />
     <Compile Include="Main.cs">
     </Compile>
     <Compile Include="Forms.cs">

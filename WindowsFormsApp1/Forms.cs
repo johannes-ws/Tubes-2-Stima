@@ -1,6 +1,8 @@
 ﻿using System;
-using System.IO;
+using System.Collections.Generic;
+using System.Threading;
 using System.Windows.Forms;
+using FileSearch;
 
 namespace WindowsFormsApp
 {
@@ -22,11 +24,15 @@ namespace WindowsFormsApp
         private Label label4;
         private Label label5;
 
+        private Microsoft.Msagl.Drawing.Graph graph;
+        private Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
+
 
         // Inputs
         public string RootFolder = "";
         public string FileName = "";
         public Boolean AllOccurance;
+        private Label label6;
         public string SearchType;
 
 		public Window()
@@ -49,6 +55,7 @@ namespace WindowsFormsApp
             this.Input = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox1
@@ -177,10 +184,23 @@ namespace WindowsFormsApp
             this.label5.Text = "Metode Pencarian:";
             this.label5.Click += new System.EventHandler(this.label5_Click);
             // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(422, 43);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(90, 29);
+            this.label6.TabIndex = 14;
+            this.label6.Text = "Output";
+            this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.label6.Click += new System.EventHandler(this.label6_Click);
+            // 
             // Window
             // 
             this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.ClientSize = new System.Drawing.Size(823, 447);
+            this.ClientSize = new System.Drawing.Size(1095, 443);
+            this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.Input);
@@ -199,8 +219,42 @@ namespace WindowsFormsApp
             this.ResumeLayout(false);
             this.PerformLayout();
 
-		}
+        }
 
+        private void Draw_Graph(List<Tuple<string, List<string>>> adj)
+        {
+            this.SuspendLayout();
+            this.graph = new Microsoft.Msagl.Drawing.Graph("graph");
+            if (this.Controls.Contains(viewer)) this.Controls.Remove(viewer);
+            this.viewer.Location = new System.Drawing.Point(460, 65);
+            this.viewer.Size = new System.Drawing.Size(570, 200);
+            this.viewer.ToolBarIsVisible = false;
+            foreach (Tuple<string, List<string>> p in adj)
+            {
+                foreach(string s in p.Item2)
+                {
+                    this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Red;
+                    this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+
+                    //associate the viewer with the form 
+                    /*
+                    this.SuspendLayout();
+                    this.Controls.Add(viewer);
+                    this.ResumeLayout();
+
+                    Thread.Sleep(500);
+                    this.SuspendLayout();
+                    this.Controls.Remove(viewer);
+                    this.ResumeLayout();
+                    */
+                }
+            }
+            viewer.Graph = graph;
+            
+            this.Controls.Add(viewer);
+            this.ResumeLayout();
+
+        }
 
 		private void textBox1_TextChanged(object sender, EventArgs e)
 		{
@@ -256,6 +310,38 @@ namespace WindowsFormsApp
             {
                 //CALL FUNCTION
                 this.label4.Text = "Function Call";
+
+                if(this.SearchType == "DFS")
+                {
+                    DepthFirstSearch dfs = new DepthFirstSearch();
+                    if (this.AllOccurance)
+                    {
+                        List<string> listPath = new List<string>();
+                        dfs.DFSmanyFile(this.RootFolder,this.FileName,listPath);
+                        List<Tuple<string, List<string>>> adj = dfs.getPairNode();
+
+                        // Output
+                        Draw_Graph(adj);
+                        string s = "Daftar file yang ditemukan: \n";
+                        if (listPath.Count == 0) s = "Tidak ada file yang ditemukan! \n";
+                        else
+                        {
+                            foreach(string path in listPath)
+                            {
+                                s += path;
+                                s += "\n";
+                            }
+                        }
+                        //this.linkLabel1.Text = s;
+                        
+                    }
+                    else
+                    {
+                        string s = dfs.DFSoneFile(this.RootFolder, this.FileName);
+                        List<Tuple<string, List<string>>> adj = dfs.getPairNode();
+                        Console.WriteLine(s);
+                    }
+                }
             }
         }
 
@@ -287,6 +373,21 @@ namespace WindowsFormsApp
         }
 
         private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
 
         }
