@@ -33,6 +33,8 @@ namespace WindowsFormsApp
         public string FileName = "";
         public Boolean AllOccurance;
         private Label label6;
+        private Label label7;
+        private LinkLabel linkLabel1;
         public string SearchType;
 
 		public Window()
@@ -56,6 +58,8 @@ namespace WindowsFormsApp
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // textBox1
@@ -151,7 +155,7 @@ namespace WindowsFormsApp
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label3.Location = new System.Drawing.Point(400, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(2, 451);
+            this.label3.Size = new System.Drawing.Size(2, 600);
             this.label3.TabIndex = 0;
             this.label3.Click += new System.EventHandler(this.label3_Click_1);
             // 
@@ -196,10 +200,30 @@ namespace WindowsFormsApp
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.label6.Click += new System.EventHandler(this.label6_Click);
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(424, 331);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(37, 17);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "here";
+            this.label7.Click += new System.EventHandler(this.label7_Click_1);
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.Location = new System.Drawing.Point(424, 361);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(0, 17);
+            this.linkLabel1.TabIndex = 16;
+            // 
             // Window
             // 
             this.BackColor = System.Drawing.SystemColors.HighlightText;
-            this.ClientSize = new System.Drawing.Size(1095, 443);
+            this.ClientSize = new System.Drawing.Size(1185, 565);
+            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -235,18 +259,6 @@ namespace WindowsFormsApp
                 {
                     this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Red;
                     this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
-
-                    //associate the viewer with the form 
-                    /*
-                    this.SuspendLayout();
-                    this.Controls.Add(viewer);
-                    this.ResumeLayout();
-
-                    Thread.Sleep(500);
-                    this.SuspendLayout();
-                    this.Controls.Remove(viewer);
-                    this.ResumeLayout();
-                    */
                 }
             }
             viewer.Graph = graph;
@@ -309,7 +321,7 @@ namespace WindowsFormsApp
             else
             {
                 //CALL FUNCTION
-                this.label4.Text = "Function Call";
+                this.label4.Text = "Processing...";
 
                 if(this.SearchType == "DFS")
                 {
@@ -321,17 +333,21 @@ namespace WindowsFormsApp
                         List<Tuple<string, List<string>>> adj = dfs.getPairNode();
 
                         // Output
+                        this.label4.Text = "Done!";
                         Draw_Graph(adj);
-                        string s = "Daftar file yang ditemukan: \n";
-                        if (listPath.Count == 0) s = "Tidak ada file yang ditemukan! \n";
+                        this.SuspendLayout();
+                        if (listPath.Count == 0) this.label7.Text = "Tidak ada file yang ditemukan! \n";
                         else
                         {
-                            foreach(string path in listPath)
+                            this.label7.Text = "Daftar file yang ditemukan: \n";
+                            int x = 424;
+                            int y = 331;
+                            foreach (string path in listPath)
                             {
-                                s += path;
-                                s += "\n";
+                                y += 25;
                             }
                         }
+                        this.ResumeLayout();
                         //this.linkLabel1.Text = s;
                         
                     }
@@ -339,7 +355,22 @@ namespace WindowsFormsApp
                     {
                         string s = dfs.DFSoneFile(this.RootFolder, this.FileName);
                         List<Tuple<string, List<string>>> adj = dfs.getPairNode();
-                        Console.WriteLine(s);
+
+                        // Output
+                        this.label4.Text = "Done!";
+                        Draw_Graph(adj);
+
+                        this.SuspendLayout();
+                        if(s=="File tidak ditemukan")
+                        {
+                            this.label7.Text = s;
+                        }
+                        else
+                        {
+                            this.label7.Text = "Path File:";
+                            this.linkLabel1.Text = s;
+                        }
+                        this.ResumeLayout();
                     }
                 }
             }
@@ -388,6 +419,11 @@ namespace WindowsFormsApp
         }
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+
+        }
+
+        private void label7_Click_1(object sender, EventArgs e)
         {
 
         }
