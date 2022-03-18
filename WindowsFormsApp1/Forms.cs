@@ -320,6 +320,7 @@ namespace WindowsFormsApp
 
         private void button1_Click(object sender, EventArgs e)
         {
+            this.FileName = this.textBox1.Text;
             if (this.RootFolder.Length == 0) this.label4.Text = "Folder Root Belum Dipilih!";
             else if (this.FileName.Length == 0) this.label4.Text = "File Target Belum Diisi!";
             else if (this.SearchType != "DFS" && this.SearchType != "BFS") this.label4.Text = "Metode Pencarian Belum Dipilih!";
