@@ -90,7 +90,7 @@ namespace FileSearch
             return this.pairNode;
         }
 
-        public string DFSoneFile(string root, string name, string fileName)
+        public string DFSoneFile(string root, string name, string fileName, List<string> blue)
         {
             DirectoryInfo directory = new DirectoryInfo(root);
             DirectoryInfo[] Folders = directory.GetDirectories();
@@ -107,6 +107,7 @@ namespace FileSearch
                 {
                     if (file.Name == fileName)
                     {
+                        blue.Add(file.Name);
                         return file.FullName;
                     }
                 }
@@ -115,10 +116,11 @@ namespace FileSearch
             {
                 foreach (DirectoryInfo folder in Folders)
                 {
-                    string fileN = DFSoneFile(folder.FullName, getNameDirectory(folder), fileName);
+                    string fileN = DFSoneFile(folder.FullName, getNameDirectory(folder), fileName, blue);
 
                     if (fileN != "File tidak ditemukan")
                     {
+                        blue.Add(getNameDirectory(folder));
                         return fileN;
                     }
                 }
@@ -127,6 +129,7 @@ namespace FileSearch
                 {
                     if (file.Name == fileName)
                     {
+                        blue.Add(file.Name);
                         return file.FullName;
                     }
                 }
@@ -136,7 +139,7 @@ namespace FileSearch
         }
 
 
-        public string DFSoneFile(string root, string fileName)
+        public string DFSoneFile(string root, string fileName, List<string> blue)
         {
             DirectoryInfo directory = new DirectoryInfo(root);
             DirectoryInfo[] Folders = directory.GetDirectories();
@@ -155,6 +158,8 @@ namespace FileSearch
                 {
                     if (file.Name == fileName)
                     {
+                        blue.Add(nameRoot);
+                        blue.Add(file.Name);
                         return file.FullName;
                     }
                 }
@@ -163,10 +168,12 @@ namespace FileSearch
             {
                 foreach (DirectoryInfo folder in Folders) //Terlebih dahulu memasuki Folder
                 {
-                    string fileN = DFSoneFile(folder.FullName, folder.Name, fileName);
+                    string fileN = DFSoneFile(folder.FullName, getNameDirectory(folder), fileName, blue);
 
                     if (fileN != "File tidak ditemukan")
                     {
+                        blue.Add(nameRoot);
+                        blue.Add(getNameDirectory(folder));
                         return fileN;
                     }
                 }
@@ -175,6 +182,8 @@ namespace FileSearch
                 {
                     if (file.Name == fileName)
                     {
+                        blue.Add(nameRoot);
+                        blue.Add(file.Name);
                         return file.FullName;
                     }
                 }
@@ -184,7 +193,7 @@ namespace FileSearch
         }
 
 
-        public void DFSmanyFile(string root, string name, string filename, List<string> listPath)
+        public void DFSmanyFile(string root, string name, string filename, List<string> listPath, List<string> blue)
         {
             DirectoryInfo directory = new DirectoryInfo(root);
             DirectoryInfo[] Folders = directory.GetDirectories();
@@ -201,6 +210,7 @@ namespace FileSearch
                 {
                     if (file.Name == filename)
                     {
+                        blue.Add(file.Name);
                         listPath.Add(file.FullName);
                     }
                 }
@@ -209,20 +219,23 @@ namespace FileSearch
             {
                 foreach (DirectoryInfo folder in Folders)
                 {
-                    DFSmanyFile(folder.FullName, getNameDirectory(folder), filename, listPath);
+                    int bef = listPath.Count;
+                    DFSmanyFile(folder.FullName, getNameDirectory(folder), filename, listPath, blue);
+                    if (listPath.Count > bef) blue.Add(getNameDirectory(folder));
                 }
 
                 foreach (FileInfo file in Files)
                 {
                     if (file.Name == filename)
                     {
+                        blue.Add(file.Name);
                         listPath.Add(file.FullName);
                     }
                 }
             }
         }
 
-        public void DFSmanyFile(string root, string filename, List<string> listPath) //listPath => semua path yang menuju filename
+        public void DFSmanyFile(string root, string filename, List<string> listPath, List<string> blue) //listPath => semua path yang menuju filename
         {
             DirectoryInfo directory = new DirectoryInfo(root);
             DirectoryInfo[] Folders = directory.GetDirectories();
@@ -241,6 +254,8 @@ namespace FileSearch
                 {
                     if (file.Name == filename)
                     {
+                        blue.Add(nameRoot);
+                        blue.Add(file.Name);
                         listPath.Add(file.FullName);
                     }
                 }
@@ -249,13 +264,21 @@ namespace FileSearch
             {
                 foreach (DirectoryInfo folder in Folders)
                 {
-                    DFSmanyFile(folder.FullName, folder.Name, filename, listPath);
+                    int bef = listPath.Count;
+                    DFSmanyFile(folder.FullName, getNameDirectory(folder), filename, listPath, blue);
+                    if (bef < listPath.Count)
+                    {
+                        blue.Add(nameRoot);
+                        blue.Add(getNameDirectory(folder));
+                    }
                 }
 
                 foreach (FileInfo file in Files)
                 {
                     if (file.Name == filename)
                     {
+                        blue.Add(nameRoot);
+                        blue.Add(file.Name);
                         listPath.Add(file.FullName);
                     }
                 }

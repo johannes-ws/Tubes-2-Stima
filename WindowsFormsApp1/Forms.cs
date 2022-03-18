@@ -245,20 +245,25 @@ namespace WindowsFormsApp
 
         }
 
-        private void Draw_Graph(List<Tuple<string, List<string>>> adj)
+        private void Draw_Graph(List<Tuple<string, List<string>>> adj, List<string> blue)
         {
             this.SuspendLayout();
             this.graph = new Microsoft.Msagl.Drawing.Graph("graph");
             if (this.Controls.Contains(viewer)) this.Controls.Remove(viewer);
-            this.viewer.Location = new System.Drawing.Point(460, 65);
-            this.viewer.Size = new System.Drawing.Size(570, 200);
+            this.viewer.Location = new System.Drawing.Point(460, 100);
+            this.viewer.Size = new System.Drawing.Size(700, 200);
             this.viewer.ToolBarIsVisible = false;
             foreach (Tuple<string, List<string>> p in adj)
             {
                 foreach(string s in p.Item2)
                 {
-                    this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Red;
+                    if(blue.Contains(p.Item1) &&  blue.Contains(s)) this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Blue;
+                    else this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Red;
+
                     this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                    if (blue.Contains(p.Item1)) this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Blue;
+                    this.graph.FindNode(s).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
+                    if (blue.Contains(s)) this.graph.FindNode(s).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Blue;
                 }
             }
             viewer.Graph = graph;
@@ -328,40 +333,59 @@ namespace WindowsFormsApp
                     DepthFirstSearch dfs = new DepthFirstSearch();
                     if (this.AllOccurance)
                     {
+                        List<string> blue = new List<string>();
                         List<string> listPath = new List<string>();
-                        dfs.DFSmanyFile(this.RootFolder,this.FileName,listPath);
+                        dfs.DFSmanyFile(this.RootFolder,this.FileName,listPath,blue);
                         List<Tuple<string, List<string>>> adj = dfs.getPairNode();
 
                         // Output
                         this.label4.Text = "Done!";
-                        Draw_Graph(adj);
+                        Draw_Graph(adj,blue);
                         this.SuspendLayout();
+                        this.Controls.Remove(linkLabel1);
+                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+                        this.linkLabel1.AutoSize = true;
+                        this.linkLabel1.Location = new System.Drawing.Point(424, 361);
+                        this.linkLabel1.Name = "linkLabel1";
+                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
+                        this.linkLabel1.TabIndex = 16;
                         if (listPath.Count == 0) this.label7.Text = "Tidak ada file yang ditemukan! \n";
                         else
                         {
                             this.label7.Text = "Daftar file yang ditemukan: \n";
-                            int x = 424;
-                            int y = 331;
+                            int cur = 0;
                             foreach (string path in listPath)
                             {
-                                y += 25;
+                                this.linkLabel1.Text += path;
+                                this.linkLabel1.Links.Add(cur, path.Length, path);
+                                this.linkLabel1.Text += "\n";
+                                cur += path.Length + 1;
                             }
+                            this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
                         }
+                        this.Controls.Add(linkLabel1);
                         this.ResumeLayout();
-                        //this.linkLabel1.Text = s;
                         
                     }
                     else
                     {
-                        string s = dfs.DFSoneFile(this.RootFolder, this.FileName);
+                        List<string> blue = new List<string>();
+                        string s = dfs.DFSoneFile(this.RootFolder, this.FileName, blue);
                         List<Tuple<string, List<string>>> adj = dfs.getPairNode();
 
                         // Output
                         this.label4.Text = "Done!";
-                        Draw_Graph(adj);
+                        Draw_Graph(adj, blue);
 
                         this.SuspendLayout();
-                        if(s=="File tidak ditemukan")
+                        this.Controls.Remove(linkLabel1);
+                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+                        this.linkLabel1.AutoSize = true;
+                        this.linkLabel1.Location = new System.Drawing.Point(424, 361);
+                        this.linkLabel1.Name = "linkLabel1";
+                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
+                        this.linkLabel1.TabIndex = 16;
+                        if (s=="File tidak ditemukan")
                         {
                             this.label7.Text = s;
                         }
@@ -369,8 +393,22 @@ namespace WindowsFormsApp
                         {
                             this.label7.Text = "Path File:";
                             this.linkLabel1.Text = s;
+                            this.linkLabel1.Links.Add(0, s.Length, s);
+                            this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
                         }
+                        this.Controls.Add(linkLabel1);
                         this.ResumeLayout();
+                    }
+                }
+                else if (this.SearchType == "BFS")
+                {
+                    if (this.AllOccurance)
+                    {
+
+                    }
+                    else
+                    {
+
                     }
                 }
             }
@@ -420,7 +458,12 @@ namespace WindowsFormsApp
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-
+            string dir = (string)e.Link.LinkData;
+            int l = dir.Length;
+            while (dir[l - 1] != '/' && dir[l - 1] != '\\') l--;
+            dir = dir.Substring(0, l-1);
+            System.Diagnostics.Process.Start("explorer.exe", dir);
+            Console.WriteLine(dir);
         }
 
         private void label7_Click_1(object sender, EventArgs e)
