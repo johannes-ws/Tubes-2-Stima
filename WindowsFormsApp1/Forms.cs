@@ -35,6 +35,7 @@ namespace WindowsFormsApp
         private Label label6;
         private Label label7;
         private LinkLabel linkLabel1;
+        private Label label8;
         public string SearchType;
 
 		public Window()
@@ -60,6 +61,7 @@ namespace WindowsFormsApp
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // textBox1
@@ -155,7 +157,7 @@ namespace WindowsFormsApp
             this.label3.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label3.Location = new System.Drawing.Point(400, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(2, 600);
+            this.label3.Size = new System.Drawing.Size(2, 6000);
             this.label3.TabIndex = 0;
             this.label3.Click += new System.EventHandler(this.label3_Click_1);
             // 
@@ -203,11 +205,10 @@ namespace WindowsFormsApp
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(424, 331);
+            this.label7.Location = new System.Drawing.Point(424, 351);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(37, 17);
+            this.label7.Size = new System.Drawing.Size(0, 17);
             this.label7.TabIndex = 15;
-            this.label7.Text = "here";
             this.label7.Click += new System.EventHandler(this.label7_Click_1);
             // 
             // linkLabel1
@@ -218,10 +219,20 @@ namespace WindowsFormsApp
             this.linkLabel1.Size = new System.Drawing.Size(0, 17);
             this.linkLabel1.TabIndex = 16;
             // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(424, 318);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(0, 17);
+            this.label8.TabIndex = 17;
+            this.label8.Click += new System.EventHandler(this.label8_Click);
+            // 
             // Window
             // 
             this.BackColor = System.Drawing.SystemColors.HighlightText;
             this.ClientSize = new System.Drawing.Size(1185, 565);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label6);
@@ -245,7 +256,7 @@ namespace WindowsFormsApp
 
         }
 
-        private void Draw_Graph(List<Tuple<string, List<string>>> adj, List<string> blue)
+        private void Draw_Graph(List<Tuple<string, List<string>>> adj, List<string> blue, List<string> black)
         {
             this.SuspendLayout();
             this.graph = new Microsoft.Msagl.Drawing.Graph("graph");
@@ -258,12 +269,15 @@ namespace WindowsFormsApp
                 foreach(string s in p.Item2)
                 {
                     if(blue.Contains(p.Item1) &&  blue.Contains(s)) this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Blue;
+                    else if (black.Contains(s)) this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Black;
                     else this.graph.AddEdge(p.Item1, s).Attr.Color = Microsoft.Msagl.Drawing.Color.Red;
 
                     this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                     if (blue.Contains(p.Item1)) this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Blue;
+                    if (black.Contains(p.Item1)) this.graph.FindNode(p.Item1).Attr.FillColor = Microsoft.Msagl.Drawing.Color.White;
                     this.graph.FindNode(s).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Red;
                     if (blue.Contains(s)) this.graph.FindNode(s).Attr.FillColor = Microsoft.Msagl.Drawing.Color.Blue;
+                    if (black.Contains(s)) this.graph.FindNode(s).Attr.FillColor = Microsoft.Msagl.Drawing.Color.White;
                 }
             }
             viewer.Graph = graph;
@@ -328,8 +342,9 @@ namespace WindowsFormsApp
             {
                 //CALL FUNCTION
                 this.label4.Text = "Processing...";
+                var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                if(this.SearchType == "DFS")
+                if (this.SearchType == "DFS")
                 {
                     DepthFirstSearch dfs = new DepthFirstSearch();
                     if (this.AllOccurance)
@@ -341,12 +356,12 @@ namespace WindowsFormsApp
 
                         // Output
                         this.label4.Text = "Done!";
-                        Draw_Graph(adj,blue);
+                        Draw_Graph(adj,blue, new List<string>());
                         this.SuspendLayout();
                         this.Controls.Remove(linkLabel1);
                         this.linkLabel1 = new System.Windows.Forms.LinkLabel();
                         this.linkLabel1.AutoSize = true;
-                        this.linkLabel1.Location = new System.Drawing.Point(424, 361);
+                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
                         this.linkLabel1.Name = "linkLabel1";
                         this.linkLabel1.Size = new System.Drawing.Size(0, 17);
                         this.linkLabel1.TabIndex = 16;
@@ -376,13 +391,13 @@ namespace WindowsFormsApp
 
                         // Output
                         this.label4.Text = "Done!";
-                        Draw_Graph(adj, blue);
+                        Draw_Graph(adj, blue, new List<string>());
 
                         this.SuspendLayout();
                         this.Controls.Remove(linkLabel1);
                         this.linkLabel1 = new System.Windows.Forms.LinkLabel();
                         this.linkLabel1.AutoSize = true;
-                        this.linkLabel1.Location = new System.Drawing.Point(424, 361);
+                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
                         this.linkLabel1.Name = "linkLabel1";
                         this.linkLabel1.Size = new System.Drawing.Size(0, 17);
                         this.linkLabel1.TabIndex = 16;
@@ -403,15 +418,71 @@ namespace WindowsFormsApp
                 }
                 else if (this.SearchType == "BFS")
                 {
+                    BreadthFirstSearch bfs = new BreadthFirstSearch();
                     if (this.AllOccurance)
                     {
+                        List<string> listPath = new List<string>();
+                        this.label4.Text = "Done!";
+                        bfs.BFSmanyFile(this.RootFolder, this.FileName, listPath);
 
+                        Draw_Graph(bfs.getPairNode(), bfs.getBlue(), bfs.getBlack());
+                        this.SuspendLayout();
+                        this.Controls.Remove(linkLabel1);
+                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+                        this.linkLabel1.AutoSize = true;
+                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
+                        this.linkLabel1.Name = "linkLabel1";
+                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
+                        this.linkLabel1.TabIndex = 16;
+                        if (listPath.Count == 0) this.label7.Text = "Tidak ada file yang ditemukan! \n";
+                        else
+                        {
+                            this.label7.Text = "Daftar file yang ditemukan: \n";
+                            int cur = 0;
+                            foreach (string path in listPath)
+                            {
+                                this.linkLabel1.Text += path;
+                                this.linkLabel1.Links.Add(cur, path.Length, path);
+                                this.linkLabel1.Text += "\n";
+                                cur += path.Length + 1;
+                            }
+                            this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
+                        }
+                        this.Controls.Add(linkLabel1);
+                        this.ResumeLayout();
                     }
                     else
                     {
+                        string s = bfs.BFSoneFile(this.RootFolder, this.FileName);
+                        this.label4.Text = "Done!";
+                        this.Draw_Graph(bfs.getPairNode(), bfs.getBlue(), bfs.getBlack());
 
+                        this.SuspendLayout();
+                        this.Controls.Remove(linkLabel1);
+                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+                        this.linkLabel1.AutoSize = true;
+                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
+                        this.linkLabel1.Name = "linkLabel1";
+                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
+                        this.linkLabel1.TabIndex = 16;
+                        if (s == "File tidak ditemukan")
+                        {
+                            this.label7.Text = s;
+                        }
+                        else
+                        {
+                            this.label7.Text = "Path File:";
+                            this.linkLabel1.Text = s;
+                            this.linkLabel1.Links.Add(0, s.Length, s);
+                            this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
+                        }
+                        this.Controls.Add(linkLabel1);
+                        this.ResumeLayout();
                     }
                 }
+
+                watch.Stop();
+                this.label8.Text = "Processing time: " + watch.ElapsedMilliseconds + " ms";
             }
         }
 
@@ -468,6 +539,11 @@ namespace WindowsFormsApp
         }
 
         private void label7_Click_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label8_Click(object sender, EventArgs e)
         {
 
         }
