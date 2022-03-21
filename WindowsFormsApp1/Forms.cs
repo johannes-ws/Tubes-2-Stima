@@ -344,27 +344,31 @@ namespace WindowsFormsApp
                 this.label4.Text = "Processing...";
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
+                this.SuspendLayout();
+                this.Controls.Remove(linkLabel1);
+                this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+                this.linkLabel1.AutoSize = true;
+                this.linkLabel1.Location = new System.Drawing.Point(424, 381);
+                this.linkLabel1.Name = "linkLabel1";
+                this.linkLabel1.Size = new System.Drawing.Size(0, 17);
+                this.linkLabel1.TabIndex = 16;
+                this.ResumeLayout();
+
+
                 if (this.SearchType == "DFS")
                 {
                     DepthFirstSearch dfs = new DepthFirstSearch();
                     if (this.AllOccurance)
                     {
-                        List<string> blue = new List<string>();
                         List<string> listPath = new List<string>();
-                        dfs.DFSmanyFile(this.RootFolder,this.FileName,listPath,blue);
+                        dfs.DFSmanyFile(this.RootFolder,this.FileName,listPath);
                         List<Tuple<string, List<string>>> adj = dfs.getPairNode();
 
                         // Output
                         this.label4.Text = "Done!";
-                        Draw_Graph(adj,blue, new List<string>());
+                        Draw_Graph(adj,dfs.getBlue(), new List<string>());
+
                         this.SuspendLayout();
-                        this.Controls.Remove(linkLabel1);
-                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-                        this.linkLabel1.AutoSize = true;
-                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
-                        this.linkLabel1.Name = "linkLabel1";
-                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
-                        this.linkLabel1.TabIndex = 16;
                         if (listPath.Count == 0) this.label7.Text = "Tidak ada file yang ditemukan! \n";
                         else
                         {
@@ -379,28 +383,19 @@ namespace WindowsFormsApp
                             }
                             this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
                         }
-                        this.Controls.Add(linkLabel1);
                         this.ResumeLayout();
                         
                     }
                     else
                     {
-                        List<string> blue = new List<string>();
-                        string s = dfs.DFSoneFile(this.RootFolder, this.FileName, blue);
+                        string s = dfs.DFSoneFile(this.RootFolder, this.FileName);
                         List<Tuple<string, List<string>>> adj = dfs.getPairNode();
 
                         // Output
                         this.label4.Text = "Done!";
-                        Draw_Graph(adj, blue, new List<string>());
+                        Draw_Graph(adj, dfs.getBlue(), dfs.getBlack());
 
                         this.SuspendLayout();
-                        this.Controls.Remove(linkLabel1);
-                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-                        this.linkLabel1.AutoSize = true;
-                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
-                        this.linkLabel1.Name = "linkLabel1";
-                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
-                        this.linkLabel1.TabIndex = 16;
                         if (s=="File tidak ditemukan")
                         {
                             this.label7.Text = s;
@@ -412,7 +407,6 @@ namespace WindowsFormsApp
                             this.linkLabel1.Links.Add(0, s.Length, s);
                             this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
                         }
-                        this.Controls.Add(linkLabel1);
                         this.ResumeLayout();
                     }
                 }
@@ -426,14 +420,8 @@ namespace WindowsFormsApp
                         bfs.BFSmanyFile(this.RootFolder, this.FileName, listPath);
 
                         Draw_Graph(bfs.getPairNode(), bfs.getBlue(), bfs.getBlack());
+
                         this.SuspendLayout();
-                        this.Controls.Remove(linkLabel1);
-                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-                        this.linkLabel1.AutoSize = true;
-                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
-                        this.linkLabel1.Name = "linkLabel1";
-                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
-                        this.linkLabel1.TabIndex = 16;
                         if (listPath.Count == 0) this.label7.Text = "Tidak ada file yang ditemukan! \n";
                         else
                         {
@@ -448,7 +436,6 @@ namespace WindowsFormsApp
                             }
                             this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
                         }
-                        this.Controls.Add(linkLabel1);
                         this.ResumeLayout();
                     }
                     else
@@ -458,29 +445,24 @@ namespace WindowsFormsApp
                         this.Draw_Graph(bfs.getPairNode(), bfs.getBlue(), bfs.getBlack());
 
                         this.SuspendLayout();
-                        this.Controls.Remove(linkLabel1);
-                        this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-                        this.linkLabel1.AutoSize = true;
-                        this.linkLabel1.Location = new System.Drawing.Point(424, 381);
-                        this.linkLabel1.Name = "linkLabel1";
-                        this.linkLabel1.Size = new System.Drawing.Size(0, 17);
-                        this.linkLabel1.TabIndex = 16;
                         if (s == "File tidak ditemukan")
                         {
                             this.label7.Text = s;
                         }
                         else
-                        {
+                        { 
                             this.label7.Text = "Path File:";
                             this.linkLabel1.Text = s;
                             this.linkLabel1.Links.Add(0, s.Length, s);
                             this.linkLabel1.LinkClicked += (a, b) => this.linkLabel1_LinkClicked(a, b);
                         }
-                        this.Controls.Add(linkLabel1);
                         this.ResumeLayout();
                     }
                 }
 
+                this.SuspendLayout();
+                this.Controls.Add(linkLabel1);
+                this.ResumeLayout();
                 watch.Stop();
                 this.label8.Text = "Processing time: " + watch.ElapsedMilliseconds + " ms";
             }

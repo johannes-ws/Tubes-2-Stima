@@ -11,11 +11,15 @@ namespace FileSearch
     {
         private List<Tuple<string, List<string>>> pairNode; //pasangan parent node dan child node, Tuple<parent, list<child>>;
         private Dictionary<string, string> pathToFile; // handles duplicate folder names
+        private List<string> blue;
+        private List<string> black;
 
         public DepthFirstSearch()
         {
             this.pairNode = new List<Tuple<string, List<string>>>();
             this.pathToFile = new Dictionary<string, string>();
+            this.blue = new List<string>();
+            this.black = new List<string>();
         }
 
         public string getNameDirectory(DirectoryInfo Folder)
@@ -42,7 +46,7 @@ namespace FileSearch
 
             foreach (DirectoryInfo folder in Folders)
             {
-                
+
                 returnValue.Add(getNameDirectory(folder));
             }
 
@@ -55,236 +59,109 @@ namespace FileSearch
 
         }
 
-        private string getNameRoot(string pathRoot)
-        {
-            string value = pathRoot;
-            int len = pathRoot.Length - 1;
-
-            bool found = false;
-            while (len >= 0 && !found)
-            {
-                if (pathRoot[len] == '\\')
-                {
-                    found = true;
-                }
-                else
-                {
-                    len--;
-                }
-            }
-
-            string discard = "";
-            int j;
-            for (j = 0; j <= len; j++)
-            {
-                discard += pathRoot[j];
-            }
-
-            pathRoot = pathRoot.Replace(discard, "");
-            pathToFile.Add(pathRoot, value);
-            return pathRoot;
-        }
-
         public List<Tuple<string, List<string>>> getPairNode()
         {
             return this.pairNode;
         }
+        public List<string> getBlue()
+        {
+            return this.blue;
+        }
 
-        public string DFSoneFile(string root, string name, string fileName, List<string> blue)
+        public List<string> getBlack()
+        {
+            return this.black;
+        }
+        public string DFSoneFile(string root, string fileName)
         {
             DirectoryInfo directory = new DirectoryInfo(root);
             DirectoryInfo[] Folders = directory.GetDirectories();
             FileInfo[] Files = directory.GetFiles();
+            string ret = "";
+            string fileN = "File tidak ditemukan";
 
             List<string> nodeChild = this.convertNameToList(Folders, Files);
-            Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(name, nodeChild);
+            string nameRoot = getNameDirectory(directory);
 
+
+            Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(nameRoot, nodeChild);
             this.pairNode.Add(parentChild);
-
-            if (Folders.Length == 0)
+            foreach (FileInfo file in Files)
             {
-                foreach (FileInfo file in Files)
+                if (ret != "")
                 {
-                    if (file.Name == fileName)
-                    {
-                        blue.Add(file.Name);
-                        return file.FullName;
-                    }
+                    black.Add(file.Name);
+                }
+                else if (file.Name == fileName)
+                {
+                    if(!blue.Contains(nameRoot))blue.Add(nameRoot);
+                    blue.Add(file.Name);
+                    ret = file.FullName;
                 }
             }
-            else
+
+            foreach (DirectoryInfo folder in Folders) 
             {
-                foreach (DirectoryInfo folder in Folders)
+                if (fileN == "black")
                 {
-                    string fileN = DFSoneFile(folder.FullName, getNameDirectory(folder), fileName, blue);
-
-                    if (fileN != "File tidak ditemukan")
-                    {
-                        blue.Add(getNameDirectory(folder));
-                        return fileN;
-                    }
+                    black.Add(getNameDirectory(folder));
+                    continue;
                 }
-
-                foreach (FileInfo file in Files) //File in root Directory
+                if (ret != "")
                 {
-                    if (file.Name == fileName)
-                    {
-                        blue.Add(file.Name);
-                        return file.FullName;
-                    }
+                    black.Add(getNameDirectory(folder));
+                    continue;
                 }
+                fileN = DFSoneFile(folder.FullName, fileName);
 
+                if (fileN != "File tidak ditemukan")
+                {
+                    if (!blue.Contains(nameRoot)) blue.Add(nameRoot);
+                    blue.Add(getNameDirectory(folder));
+                    ret = fileN;
+                    fileN = "black";
+                }
             }
+
+            if (ret != "") return ret;
+
+
             return "File tidak ditemukan";
         }
 
-
-        public string DFSoneFile(string root, string fileName, List<string> blue)
+        public void DFSmanyFile(string root, string filename, List<string> listPath) //listPath => semua path yang menuju filename
         {
             DirectoryInfo directory = new DirectoryInfo(root);
             DirectoryInfo[] Folders = directory.GetDirectories();
             FileInfo[] Files = directory.GetFiles();
 
             List<string> nodeChild = this.convertNameToList(Folders, Files);
-            string nameRoot = getNameRoot(root);
+            string nameRoot = getNameDirectory(directory);
 
 
             Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(nameRoot, nodeChild);
             this.pairNode.Add(parentChild);
 
-            if (Folders.Length == 0)
+            foreach (FileInfo file in Files)
             {
-                foreach (FileInfo file in Files)
+                if (file.Name == filename)
                 {
-                    if (file.Name == fileName)
-                    {
-                        blue.Add(nameRoot);
-                        blue.Add(file.Name);
-                        return file.FullName;
-                    }
+                    blue.Add(nameRoot);
+                    blue.Add(file.Name);
+                    listPath.Add(file.FullName);
                 }
             }
-            else
+
+            foreach (DirectoryInfo folder in Folders)
             {
-                foreach (DirectoryInfo folder in Folders) //Terlebih dahulu memasuki Folder
+                int bef = listPath.Count;
+                DFSmanyFile(folder.FullName, filename, listPath);
+                if (bef < listPath.Count)
                 {
-                    string fileN = DFSoneFile(folder.FullName, getNameDirectory(folder), fileName, blue);
-
-                    if (fileN != "File tidak ditemukan")
-                    {
-                        blue.Add(nameRoot);
-                        blue.Add(getNameDirectory(folder));
-                        return fileN;
-                    }
-                }
-
-                foreach (FileInfo file in Files) //File in root Directory
-                {
-                    if (file.Name == fileName)
-                    {
-                        blue.Add(nameRoot);
-                        blue.Add(file.Name);
-                        return file.FullName;
-                    }
-                }
-
-            }
-            return "File tidak ditemukan";
-        }
-
-
-        public void DFSmanyFile(string root, string name, string filename, List<string> listPath, List<string> blue)
-        {
-            DirectoryInfo directory = new DirectoryInfo(root);
-            DirectoryInfo[] Folders = directory.GetDirectories();
-            FileInfo[] Files = directory.GetFiles();
-
-            List<string> nodeChild = this.convertNameToList(Folders, Files);
-            Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(name, nodeChild);
-
-            this.pairNode.Add(parentChild);
-
-            if (Folders.Length == 0)
-            {
-                foreach (FileInfo file in Files)
-                {
-                    if (file.Name == filename)
-                    {
-                        blue.Add(file.Name);
-                        listPath.Add(file.FullName);
-                    }
-                }
-            }
-            else
-            {
-                foreach (DirectoryInfo folder in Folders)
-                {
-                    int bef = listPath.Count;
-                    DFSmanyFile(folder.FullName, getNameDirectory(folder), filename, listPath, blue);
-                    if (listPath.Count > bef) blue.Add(getNameDirectory(folder));
-                }
-
-                foreach (FileInfo file in Files)
-                {
-                    if (file.Name == filename)
-                    {
-                        blue.Add(file.Name);
-                        listPath.Add(file.FullName);
-                    }
+                    blue.Add(nameRoot);
+                    blue.Add(getNameDirectory(folder));
                 }
             }
         }
-
-        public void DFSmanyFile(string root, string filename, List<string> listPath, List<string> blue) //listPath => semua path yang menuju filename
-        {
-            DirectoryInfo directory = new DirectoryInfo(root);
-            DirectoryInfo[] Folders = directory.GetDirectories();
-            FileInfo[] Files = directory.GetFiles();
-
-            List<string> nodeChild = this.convertNameToList(Folders, Files);
-            string nameRoot = getNameRoot(root);
-
-
-            Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(nameRoot, nodeChild);
-            this.pairNode.Add(parentChild);
-
-            if (Folders.Length == 0)
-            {
-                foreach (FileInfo file in Files)
-                {
-                    if (file.Name == filename)
-                    {
-                        blue.Add(nameRoot);
-                        blue.Add(file.Name);
-                        listPath.Add(file.FullName);
-                    }
-                }
-            }
-            else
-            {
-                foreach (DirectoryInfo folder in Folders)
-                {
-                    int bef = listPath.Count;
-                    DFSmanyFile(folder.FullName, getNameDirectory(folder), filename, listPath, blue);
-                    if (bef < listPath.Count)
-                    {
-                        blue.Add(nameRoot);
-                        blue.Add(getNameDirectory(folder));
-                    }
-                }
-
-                foreach (FileInfo file in Files)
-                {
-                    if (file.Name == filename)
-                    {
-                        blue.Add(nameRoot);
-                        blue.Add(file.Name);
-                        listPath.Add(file.FullName);
-                    }
-                }
-            }
-        }
-
-
     }
 }

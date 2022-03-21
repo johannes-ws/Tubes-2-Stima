@@ -58,35 +58,6 @@ namespace FileSearch
 
         }
 
-        private string getNameRoot(string pathRoot)
-        {
-            string value = pathRoot;
-            int len = pathRoot.Length - 1;
-
-            bool found = false;
-            while (len >= 0 && !found)
-            {
-                if (pathRoot[len] == '\\')
-                {
-                    found = true;
-                }
-                else
-                {
-                    len--;
-                }
-            }
-
-            string discard = "";
-            int j;
-            for (j = 0; j <= len; j++)
-            {
-                discard += pathRoot[j];
-            }
-
-            pathRoot = pathRoot.Replace(discard, "");
-            return pathRoot;
-        }
-
         public List<Tuple<string, List<string>>> getPairNode()
         {
             return this.pairNode;
@@ -104,16 +75,14 @@ namespace FileSearch
         public string BFSoneFile(string root, string fileName)
         {
             DirectoryInfo directory = new DirectoryInfo(root);
-            DirectoryInfo[] Folders = directory.GetDirectories();
-            FileInfo[] Files = directory.GetFiles();
+            DirectoryInfo[] Folders;
+            FileInfo[] Files;
             Dictionary<string, string> parent = new Dictionary<string, string>();
             string ret = "";
 
-            List<string> nodeChild = this.convertNameToList(Folders, Files);
-            string nameRoot = getNameRoot(root);
-
-            Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(nameRoot, nodeChild);
-            this.pairNode.Add(parentChild);
+            List<string> nodeChild;
+            string nameRoot = getNameDirectory(directory);
+            Tuple<string, List<string>> parentChild;
 
             Queue<string> q = new Queue<string>();
             q.Enqueue(root);
@@ -151,6 +120,12 @@ namespace FileSearch
                     }
                 }
 
+                foreach (DirectoryInfo folder in Folders)
+                {
+                    parent.Add(getNameDirectory(folder), getNameDirectory(directory));
+                    q.Enqueue(folder.FullName);
+                }
+
                 if (ret != "")
                 {
                     while (q.Count != 0)
@@ -161,12 +136,6 @@ namespace FileSearch
                     }
                     return ret;
                 }
-
-                foreach (DirectoryInfo folder in Folders)
-                {
-                    parent.Add(getNameDirectory(folder), getNameDirectory(directory));
-                    q.Enqueue(folder.FullName);
-                }
             }
 
             return "File tidak ditemukan";
@@ -176,15 +145,13 @@ namespace FileSearch
         public void BFSmanyFile(string root,  string fileName, List<string> listPath)
         {
             DirectoryInfo directory = new DirectoryInfo(root);
-            DirectoryInfo[] Folders = directory.GetDirectories();
-            FileInfo[] Files = directory.GetFiles();
+            DirectoryInfo[] Folders;
+            FileInfo[] Files;
             Dictionary<string, string> parent = new Dictionary<string, string>();
 
-            List<string> nodeChild = this.convertNameToList(Folders, Files);
-            string nameRoot = getNameRoot(root);
-
-            Tuple<string, List<string>> parentChild = new Tuple<string, List<string>>(nameRoot, nodeChild);
-            this.pairNode.Add(parentChild);
+            List<string> nodeChild;
+            string nameRoot = getNameDirectory(directory);
+            Tuple<string, List<string>> parentChild;
 
             Queue<string> q = new Queue<string>();
             q.Enqueue(root);
