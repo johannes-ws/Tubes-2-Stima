@@ -1,10 +1,18 @@
-# Tubes-2-Stima
+# Tugas Besar 2 IF2211 Strategi Algoritma
+# Pengaplikasian Algoritma BFS dan DFS dalam Implementasi _Folder Crawling_
 
-### File DFS-BFS: 
-  - Input: Root Folder, File Target, DFS/BFS Option, Find All Occurance Option
-  - Output: Adj List (Dict?) ["Root":["A","B","C"]]  
-  - Functions: DFS sampai dapat, BFS sampai dapat, DFS full search, BFS full search
+|             Nama            |    NIM   |
+| :-------------------------: | :------: |
+| Afrizal Sebastian           | 13520120 |
+| Johannes Winson Sukiatmodjo | 13520123 |
+| Frederik Imanuel Louis      | 13520163 |
 
-### File Main: 
-  - Implementasi GUI
-  - Formatting Output with MSAGL
+## Deskripsi Singkat Program
+
+## Requirement Program
+
+## Instalasi _Module_/_Package_ (bila ada)
+
+## Langkah Meng-_compile_ Program (jika diperlukan)
+
+## Cara Menggunakan Program
