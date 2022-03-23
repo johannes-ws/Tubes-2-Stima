@@ -31,7 +31,7 @@ namespace FileSearch
             }
             else if (pathToFile[name] != Folder.FullName)
             {
-                int i = 0;
+                int i = 1;
                 while (pathToFile.ContainsKey(name + "(" + i + ")") && pathToFile[name + "(" + i + ")"] != Folder.FullName) i++;
                 name = name + "(" + i + ")";
                 if(!pathToFile.ContainsKey(name))pathToFile.Add(name, Folder.FullName);
