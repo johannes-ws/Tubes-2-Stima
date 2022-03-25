@@ -23,6 +23,10 @@ namespace WindowsFormsApp
         private Label Input;
         private Label label4;
         private Label label5;
+        private Label label6;
+        private Label label7;
+        private LinkLabel linkLabel1;
+        private Label label8;
 
         private Microsoft.Msagl.Drawing.Graph graph;
         private Microsoft.Msagl.GraphViewerGdi.GViewer viewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
@@ -32,10 +36,6 @@ namespace WindowsFormsApp
         public string RootFolder = "";
         public string FileName = "";
         public Boolean AllOccurance;
-        private Label label6;
-        private Label label7;
-        private LinkLabel linkLabel1;
-        private Label label8;
         public string SearchType;
 
 		public Window()
