@@ -8,7 +8,7 @@
 | Frederik Imanuel Louis      | 13520163 |
 
 ## Deskripsi Singkat Program
-Program ini bernama _Folder Crawling_ yang merupakan sebuah aplikasi GUI sederhana yang dapat memodelkan fitur dari _file explorer_ pada sistem operasi. Dengan memanfaatkan algoritma _Breadth First Search_ (BFS) dan _Depth First Search_ (DFS), program ini akan menelusuri folder-folder yang ada pada direktori untuk mendapatkan file yang ingin dicari. Program ini menerima input folder yang hendak ditelusuri, nama file yang ingin dicari, checkbox untuk mencari semua kemunculan file, dan metode pencarian yang ingin digunakan. Setelah menekan tombol `Cari`, program akan menampilkan visualisasi pohon pencarian file, durasi pencarian file, dan hyperlink agar file langsung dapat diakses melalui _file explorer_.
+Program ini bernama _Folder Crawling_ yang merupakan sebuah aplikasi GUI sederhana yang dapat memodelkan fitur dari _file explorer_ pada sistem operasi. Dengan memanfaatkan algoritma _Breadth First Search_ (BFS) dan _Depth First Search_ (DFS), program ini akan menelusuri folder-folder yang ada pada direktori untuk mendapatkan file yang ingin dicari. Program ini menerima input folder yang hendak ditelusuri, nama file yang ingin dicari, checkbox untuk mencari semua kemunculan file, dan metode pencarian yang ingin digunakan. Setelah menekan tombol `Cari`, program akan menampilkan visualisasi pohon pencarian file, durasi pencarian file, dan hyperlink agar file langsung dapat diakses melalui _file explorer_. Program ini dibuat dengan bahasa C# dengan kakas Visual Studio .NET dan MSAGL untuk memvisualisasikan pohon pencarian file.
 
 ## Requirement Program dan Instalasi _Module_/_Package_
 1. Visual Studio --> https://visualstudio.microsoft.com/downloads/
